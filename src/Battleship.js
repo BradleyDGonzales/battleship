@@ -1,31 +1,35 @@
-const Ship = () => {
-  constructor();
+export const Ship = () => {
   const Carrier = {
+    name: 'Carrier',
     size: 5,
     hits: 0,
     status: false,
   };
   const Battleship = {
+    name: 'Battleship',
     size: 4,
     hits: 0,
     status: false,
   };
   const Destroyer = {
+    name: 'Destroyer',
     size: 3,
     hits: 0,
     status: false,
   };
   const Submarine = {
+    name: 'Submarine',
     size: 3,
     hits: 0,
     status: false,
   };
   const PatrolBoat = {
+    name: 'PatrolBoat',
     size: 2,
     hits: 0,
     status: false,
   };
-  const hit = (ship) => {
+  const hit = (...ship) => {
     if (ship.hits === ship.size) {
       return 'sunk';
     } else {
@@ -40,7 +44,6 @@ const Ship = () => {
   };
 };
 const test = Ship();
-module.exports = Ship;
 
 // const carrierSize = 5;
 // const battleShipSize = 4;
