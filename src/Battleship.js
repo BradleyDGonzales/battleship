@@ -29,11 +29,11 @@ export const Ship = () => {
     hits: 0,
     status: false,
   };
-  const hit = (...ship) => {
+  const hit = (ship) => {
     if (ship.hits === ship.size) {
       return 'sunk';
     } else {
-      return ship.hits = ship.hits + 1;
+      return ship.hits += 1;
     }
   };
   const isSunk = (ship) => {
@@ -44,9 +44,3 @@ export const Ship = () => {
   };
 };
 const test = Ship();
-
-// const carrierSize = 5;
-// const battleShipSize = 4;
-// const destroyerSize = 3;
-// const submarineSize = 3;
-// const patrolBoatSize = 2;
