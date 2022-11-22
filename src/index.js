@@ -7,6 +7,7 @@ import {Ship} from './Battleship';
 const playerGrid = document.getElementById('playerGrid');
 const computerGrid = document.getElementById('computerGrid');
 export const choice = ['Carrier', 'Battleship', 'Destroyer', 'Submarine', 'PatrolBoat'];
+export let rotation = false;
 makePlayerGrid();
 makeComputerGrid();
 function makePlayerGrid() {
@@ -69,5 +70,15 @@ window.addEventListener('DOMContentLoaded', (e) => {
         alert('Finish setting up your pieces!');
       }
     });
+  });
+  document.getElementById('RotationButton').addEventListener('click', function(e) {
+    const rotationText = document.getElementById('RotationText');
+    if (rotationText.textContent.includes('horizontal')) {
+      rotationText.textContent = 'Currently placing your pieces vertically (top to down)';
+      rotation = true;
+    } else if (rotationText.textContent.includes('vertical')) {
+      rotationText.textContent = 'Currently placing your pieces horizontally (left to right)';
+      rotation = false;
+    }
   });
 });

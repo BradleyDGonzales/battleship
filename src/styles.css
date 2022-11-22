@@ -14,9 +14,11 @@
   justify-items: center;
   margin-top: 3em;
 }
-#test {
+#info {
+  text-align: center;
   grid-column: 1 / span 2;
 }
+
 #playerGrid {
   display: grid;
   grid-template-rows: repeat(var(--grid-rows), 1fr);
