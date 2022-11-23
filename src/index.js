@@ -4,12 +4,14 @@
 import {getGridElementsPosition, getNodeIndex} from './coordinates.js';
 import {Gameboard, gameStart} from './Gameboard.js';
 import {Ship} from './Battleship';
+import {Player} from './Player.js';
 const playerGrid = document.getElementById('playerGrid');
 const computerGrid = document.getElementById('computerGrid');
 export const choice = ['Carrier', 'Battleship', 'Destroyer', 'Submarine', 'PatrolBoat'];
 export let rotation = false;
 makePlayerGrid();
 makeComputerGrid();
+// const test123 = Player().randomComputerPlacements();
 function makePlayerGrid() {
   for (let i = 0; i < (10 * 10); i++) {
     const cell = document.createElement('div');
