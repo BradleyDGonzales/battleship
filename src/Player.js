@@ -1,41 +1,61 @@
-export const computerOccupiedCells = [];
+import {Gameboard, playerOneTurn, computerPiecePlaced} from './Gameboard';
+import {Ship} from './Battleship';
 export const computerChoice = ['Carrier', 'Battleship', 'Destroyer', 'Submarine', 'PatrolBoat'];
+export let playerTwoTurn = false;
+export let computerRotation;
 export const Player = () => {
-  const randomComputerPlacements = () => {
-    const rotation = Math.floor(Math.random() * (2 - 1 + 1) + 1);
-    let index = Math.floor(Math.random() * (99 - 0 + 1) + 0);
-    // 1 = true, 2 = false
-    if (rotation === 1) {
-      const indexLength = index.toString().length;
-      if (indexLength === 1) {
-        console.log('inside 1');
-        index = index.toString().padStart(2, '0');
-      } else {
-        console.log('inside else');
-        index = index.toString();
-      }
-    } else {
-      const indexLength = index.toString().length;
-      if (indexLength === 1) {
-        console.log('inside 1');
-        index = index.toString().padStart(2, '0');
-      } else {
-        console.log('inside else');
-        index = index.toString();
-      }
-    }
-    console.log(index);
-
-    const coordinates = [parseInt(index.charAt(0)), parseInt(index.charAt(1))];
-    console.log(coordinates);
+  const playerOne = {
+    name: 'You',
   };
-  const playerOne = () => {
+  const playerTwo = {
+    name: 'Computer',
+    randomComputerPlacements() {
+      computerRotation = Math.floor(Math.random() * (2 - 1 + 1) + 1);
+      let index = Math.floor(Math.random() * (99 - 0 + 1) + 0);
+      index = index.toString().padStart(2, '0');
+      const coordinates = [parseInt(index.charAt(0)), parseInt(index.charAt(1))];
+      while (computerChoice.length !== 0) {
+        if (computerChoice[0] === 'PatrolBoat') {
+          playerTwoTurn = true;
+          Gameboard().computerPlace(Ship().PatrolBoat, [coordinates]);
+          if (!computerPiecePlaced) {
+            this.randomComputerPlacements();
+          }
+        }
+        if (computerChoice[0] === 'Carrier') {
+          playerTwoTurn = true;
+          Gameboard().computerPlace(Ship().Carrier, [coordinates]);
+          if (!computerPiecePlaced) {
+            this.randomComputerPlacements();
+          }
+        }
+        if (computerChoice[0] === 'Destroyer') {
+          playerTwoTurn = true;
+          Gameboard().computerPlace(Ship().Destroyer, [coordinates]);
+          if (!computerPiecePlaced) {
+            this.randomComputerPlacements();
+          }
+        }
+        if (computerChoice[0] === 'Submarine') {
+          playerTwoTurn = true;
+          Gameboard().computerPlace(Ship().Submarine, [coordinates]);
+          if (!computerPiecePlaced) {
+            this.randomComputerPlacements();
+          }
+        }
+        if (computerChoice[0] === 'Battleship') {
+          playerTwoTurn = true;
+          Gameboard().computerPlace(Ship().Battleship, [coordinates]);
+          if (!computerPiecePlaced) {
+            this.randomComputerPlacements();
+          }
+        }
+      }
+    },
 
-  };
-  const playerTwo = () => {
 
   };
   return {
-    randomComputerPlacements, playerOne, playerTwo,
+    playerOne, playerTwo,
   };
 };

@@ -9,9 +9,15 @@ const playerGrid = document.getElementById('playerGrid');
 const computerGrid = document.getElementById('computerGrid');
 export const choice = ['Carrier', 'Battleship', 'Destroyer', 'Submarine', 'PatrolBoat'];
 export let rotation = false;
+export const carrierHits = 1;
+export const battleShipHits = 1;
+export const destroyerHits = 1;
+export const submarineHits = 1;
+export const patrolBoatHits = 1;
+export let test11 = '';
 makePlayerGrid();
 makeComputerGrid();
-// const test123 = Player().randomComputerPlacements();
+const test123 = Player().playerTwo.randomComputerPlacements();
 function makePlayerGrid() {
   for (let i = 0; i < (10 * 10); i++) {
     const cell = document.createElement('div');
@@ -67,6 +73,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
       if (gameStart) {
         const position = getGridElementsPosition(getNodeIndex(e.target));
         const coordinates = [[position.row, position.column]];
+        test11 = e.target.id;
         Gameboard().receiveAttack(coordinates);
       } else {
         alert('Finish setting up your pieces!');
@@ -84,3 +91,8 @@ window.addEventListener('DOMContentLoaded', (e) => {
     }
   });
 });
+
+Ship().hit(Ship().Carrier);
+Ship().hit(Ship().Carrier);
+Ship().hit(Ship().Carrier);
+console.log(Ship().Carrier);

@@ -19,7 +19,6 @@ function getGridElementsPosition(index) {
   // Return an object with properties row and column
   return {row: rowPosition, column: colPosition};
 }
-
 function getNodeIndex(elm) {
   const c = elm.parentNode.children;
   let i = 0;
