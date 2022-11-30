@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import {$dataMetaSchema} from 'ajv';
-import {choice, rotation, test11} from './index.js';
+import {Ship} from './Battleship.js';
+import {choice, rotation, currentTarget} from './index.js';
 import {Player, playerTwoTurn, computerChoice, computerRotation} from './Player.js';
-export const playerOneTurn = true;
+export let playerOneTurn = true;
 export let gameboardFlag;
 export let gameStart = false;
 export const occupiedCells = [];
@@ -16,6 +16,11 @@ export const missedAttacks = [];
 export const computerMissedAttacks = [];
 export const attemptedAttacks = [];
 export const computerAttemptedAttacks = [];
+export let carrierHits = 0;
+export let battleShipHits = 0;
+export let destroyerHits = 0;
+export let submarineHits = 0;
+export let patrolBoatHits = 0;
 export let currentShipName = '';
 export let computerPiecePlaced = false;
 export const Gameboard = () => {
@@ -296,6 +301,7 @@ export const Gameboard = () => {
         if (choice.length === 0) {
           selectText.innerText = 'Begin Game';
           gameStart = true;
+          playerOneTurn = true;
         } else {
           selectText.innerText = `Place your ${choice[0]}`;
         }
@@ -392,33 +398,112 @@ export const Gameboard = () => {
 
 
   const receiveAttack = (coordinates) => {
-    console.log(`receiveattack ${test11}`);
-    if (JSON.stringify(attemptedAttacks).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) === -1) {
-      attemptedAttacks.push([coordinates[0][0], coordinates[0][1]]);
-      let selectComputerCell = document.getElementById(`computerCell${[coordinates[0][0]]}${[coordinates[0][1]]}`);
-      if (selectComputerCell === null) {
-        selectComputerCell = document.getElementById(`${test11}`);
-      }
-      if (JSON.stringify(computerOccupiedCells).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) !== -1 && JSON.stringify(missedAttacks).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) === -1) {
-        selectComputerCell.style.backgroundColor = 'red';
-        for (let i = 0; i < computerOccupiedCells.length; i++) {
-          if (JSON.stringify(computerOccupiedCells[i]) === JSON.stringify([coordinates[0][0], coordinates[0][1]])) {
-            computerOccupiedCells.splice(i, 1);
-            break;
+    console.log(`receiveattack ${currentTarget}`);
+    if (playerOneTurn) {
+      if (JSON.stringify(attemptedAttacks).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) === -1) {
+        attemptedAttacks.push([coordinates[0][0], coordinates[0][1]]);
+        let selectComputerCell = document.getElementById(`computerCell${[coordinates[0][0]]}${[coordinates[0][1]]}`);
+        if (selectComputerCell === null) {
+          selectComputerCell = document.getElementById(`${currentTarget}`);
+        }
+        if (JSON.stringify(computerOccupiedCells).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) !== -1 && JSON.stringify(missedAttacks).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) === -1) {
+          const shipName = currentTarget.slice(14, currentTarget.length);
+          switch (shipName) {
+            case 'Carrier':
+              carrierHits++;
+              Ship().hit(Ship().Carrier);
+              break;
+            case 'Battleship':
+              battleShipHits++;
+              Ship().hit(Ship().Battleship);
+              break;
+            case 'Destroyer':
+              destroyerHits++;
+              Ship().hit(Ship().Destroyer);
+              break;
+            case 'Submarine':
+              submarineHits++;
+              Ship().hit(Ship().Submarine);
+              break;
+            case 'PatrolBoat':
+              patrolBoatHits++;
+              Ship().hit(Ship().PatrolBoat);
+              break;
           }
+          selectComputerCell.style.backgroundColor = 'red';
+          for (let i = 0; i < computerOccupiedCells.length; i++) {
+            if (JSON.stringify(computerOccupiedCells[i]) === JSON.stringify([coordinates[0][0], coordinates[0][1]])) {
+              computerOccupiedCells.splice(i, 1);
+              break;
+            }
+          }
+        } else {
+          missedAttacks.push([coordinates[0][0], coordinates[0][1]]);
+          selectComputerCell.style.backgroundColor = 'yellow';
+          playerOneTurn = false;
         }
       } else {
-        missedAttacks.push([coordinates[0][0], coordinates[0][1]]);
-        selectComputerCell.style.backgroundColor = 'yellow';
+        alert('Cell already attacked');
+      }
+      if (computerOccupiedCells.length === 0) {
+        setTimeout(function() {
+          alert('game over');
+        }, 50);
+        return;
       }
     } else {
-      alert('Cell already attacked');
-    }
-    if (computerOccupiedCells.length === 0) {
-      setTimeout(function() {
-        alert('game over');
-      }, 50);
-      return;
+      alert('not your turn');
+    // TODO: add computer random hit on player grid
+    //   if (JSON.stringify(computerAttemptedAttacks).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) === -1) {
+    //     computerAttemptedAttacks.push([coordinates[0][0], coordinates[0][1]]);
+    //     let selectComputerCell = document.getElementById(`computerCell${[coordinates[0][0]]}${[coordinates[0][1]]}`);
+    //     if (selectComputerCell === null) {
+    //       selectComputerCell = document.getElementById(`${currentTarget}`);
+    //     }
+    //     if (JSON.stringify(computerOccupiedCells).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) !== -1 && JSON.stringify(missedAttacks).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) === -1) {
+    //       const shipName = currentTarget.slice(14, currentTarget.length);
+    //       switch (shipName) {
+    //         case 'Carrier':
+    //           carrierHits++;
+    //           Ship().hit(Ship().Carrier);
+    //           break;
+    //         case 'Battleship':
+    //           battleShipHits++;
+    //           Ship().hit(Ship().Battleship);
+    //           break;
+    //         case 'Destroyer':
+    //           destroyerHits++;
+    //           Ship().hit(Ship().Destroyer);
+    //           break;
+    //         case 'Submarine':
+    //           submarineHits++;
+    //           Ship().hit(Ship().Submarine);
+    //           break;
+    //         case 'PatrolBoat':
+    //           patrolBoatHits++;
+    //           Ship().hit(Ship().PatrolBoat);
+    //           break;
+    //       }
+    //       selectComputerCell.style.backgroundColor = 'red';
+    //       for (let i = 0; i < computerOccupiedCells.length; i++) {
+    //         if (JSON.stringify(computerOccupiedCells[i]) === JSON.stringify([coordinates[0][0], coordinates[0][1]])) {
+    //           computerOccupiedCells.splice(i, 1);
+    //           break;
+    //         }
+    //       }
+    //     } else {
+    //       missedAttacks.push([coordinates[0][0], coordinates[0][1]]);
+    //       selectComputerCell.style.backgroundColor = 'yellow';
+    //     }
+    //   } else {
+    //     alert('Cell already attacked');
+    //   }
+    //   if (computerOccupiedCells.length === 0) {
+    //     setTimeout(function() {
+    //       alert('game over');
+    //     }, 50);
+    //     return;
+    //   }
     }
   };
   return {

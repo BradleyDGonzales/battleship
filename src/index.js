@@ -2,19 +2,14 @@
 /* eslint-disable require-jsdoc */
 
 import {getGridElementsPosition, getNodeIndex} from './coordinates.js';
-import {Gameboard, gameStart} from './Gameboard.js';
+import {Gameboard, gameStart, playerOneTurn} from './Gameboard.js';
 import {Ship} from './Battleship';
 import {Player} from './Player.js';
 const playerGrid = document.getElementById('playerGrid');
 const computerGrid = document.getElementById('computerGrid');
 export const choice = ['Carrier', 'Battleship', 'Destroyer', 'Submarine', 'PatrolBoat'];
 export let rotation = false;
-export const carrierHits = 1;
-export const battleShipHits = 1;
-export const destroyerHits = 1;
-export const submarineHits = 1;
-export const patrolBoatHits = 1;
-export let test11 = '';
+export let currentTarget = '';
 makePlayerGrid();
 makeComputerGrid();
 const test123 = Player().playerTwo.randomComputerPlacements();
@@ -73,7 +68,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
       if (gameStart) {
         const position = getGridElementsPosition(getNodeIndex(e.target));
         const coordinates = [[position.row, position.column]];
-        test11 = e.target.id;
+        currentTarget = e.target.id;
         Gameboard().receiveAttack(coordinates);
       } else {
         alert('Finish setting up your pieces!');
@@ -91,8 +86,3 @@ window.addEventListener('DOMContentLoaded', (e) => {
     }
   });
 });
-
-Ship().hit(Ship().Carrier);
-Ship().hit(Ship().Carrier);
-Ship().hit(Ship().Carrier);
-console.log(Ship().Carrier);

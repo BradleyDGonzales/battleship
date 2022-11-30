@@ -1,7 +1,7 @@
 import {Gameboard, playerOneTurn, computerPiecePlaced} from './Gameboard';
 import {Ship} from './Battleship';
 export const computerChoice = ['Carrier', 'Battleship', 'Destroyer', 'Submarine', 'PatrolBoat'];
-export let playerTwoTurn = false;
+export const playerTwoTurn = false;
 export let computerRotation;
 export const Player = () => {
   const playerOne = {
@@ -16,35 +16,30 @@ export const Player = () => {
       const coordinates = [parseInt(index.charAt(0)), parseInt(index.charAt(1))];
       while (computerChoice.length !== 0) {
         if (computerChoice[0] === 'PatrolBoat') {
-          playerTwoTurn = true;
           Gameboard().computerPlace(Ship().PatrolBoat, [coordinates]);
           if (!computerPiecePlaced) {
             this.randomComputerPlacements();
           }
         }
         if (computerChoice[0] === 'Carrier') {
-          playerTwoTurn = true;
           Gameboard().computerPlace(Ship().Carrier, [coordinates]);
           if (!computerPiecePlaced) {
             this.randomComputerPlacements();
           }
         }
         if (computerChoice[0] === 'Destroyer') {
-          playerTwoTurn = true;
           Gameboard().computerPlace(Ship().Destroyer, [coordinates]);
           if (!computerPiecePlaced) {
             this.randomComputerPlacements();
           }
         }
         if (computerChoice[0] === 'Submarine') {
-          playerTwoTurn = true;
           Gameboard().computerPlace(Ship().Submarine, [coordinates]);
           if (!computerPiecePlaced) {
             this.randomComputerPlacements();
           }
         }
         if (computerChoice[0] === 'Battleship') {
-          playerTwoTurn = true;
           Gameboard().computerPlace(Ship().Battleship, [coordinates]);
           if (!computerPiecePlaced) {
             this.randomComputerPlacements();
