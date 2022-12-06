@@ -2,14 +2,15 @@
 /* eslint-disable require-jsdoc */
 
 import {getGridElementsPosition, getNodeIndex} from './coordinates.js';
-import {Gameboard, gameStart, playerOneTurn} from './Gameboard.js';
+import {Gameboard, gameStart} from './Gameboard.js';
 import {Ship} from './Battleship';
 import {Player} from './Player.js';
 const playerGrid = document.getElementById('playerGrid');
 const computerGrid = document.getElementById('computerGrid');
 export const choice = ['Carrier', 'Battleship', 'Destroyer', 'Submarine', 'PatrolBoat'];
 export let rotation = false;
-export let currentTarget = '';
+export let currentTarget;
+export let currentETarget = '';
 makePlayerGrid();
 makeComputerGrid();
 const test123 = Player().playerTwo.randomComputerPlacements();
@@ -37,7 +38,6 @@ window.addEventListener('DOMContentLoaded', (e) => {
       if (!gameStart) {
         const position = getGridElementsPosition(getNodeIndex(e.target));
         const coordinates = [[position.row, position.column]];
-        console.log(coordinates);
         if (choice[0] === 'PatrolBoat') {
           Gameboard().place(Ship().PatrolBoat, coordinates);
           return;
@@ -68,6 +68,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
       if (gameStart) {
         const position = getGridElementsPosition(getNodeIndex(e.target));
         const coordinates = [[position.row, position.column]];
+        currentETarget = e.target;
         currentTarget = e.target.id;
         Gameboard().receiveAttack(coordinates);
       } else {

@@ -1,13 +1,28 @@
 /* eslint-disable max-len */
 import {Ship} from './Battleship.js';
-import {choice, rotation, currentTarget} from './index.js';
-import {Player, playerTwoTurn, computerChoice, computerRotation} from './Player.js';
+import {choice, rotation, currentTarget, currentETarget} from './index.js';
+import {Player, computerChoice, computerRotation, playerTwoTurn, successfulHit} from './Player.js';
 export let playerOneTurn = true;
 export let gameboardFlag;
 export let gameStart = false;
 export const occupiedCells = [];
 export const computerOccupiedCells = [];
 export let adjacentCells = [];
+export const carrierAdjacentCells = [];
+export const battleshipAdjacentCells = [];
+export const submarineAdjacentCells = [];
+export const patrolboatAdjacentCells = [];
+export const destroyerAdjacentCells = [];
+export const computerCarrierAdjacentCells = [];
+export const computerBattleshipAdjacentCells = [];
+export const computerSubmarineAdjacentCells = [];
+export const computerPatrolboatAdjacentCells = [];
+export const computerDestroyerAdjacentCells = [];
+export let computerUniqueCarrierAdjacentCells = [];
+export let computerUniqueBattleshipAdjacentCells = [];
+export let computerUniqueSubmarineAdjacentCells = [];
+export let computerUniquePatrolboatAdjacentCells = [];
+export let computerUniqueDestroyerAdjacentCells = [];
 export let computerAdjacentCells = [];
 export let count = 0;
 export const tempArray = [];
@@ -26,7 +41,6 @@ export let computerPiecePlaced = false;
 export const Gameboard = () => {
   const computerPlace = (ship, coordinates) => {
     currentShipName = ship.name;
-    console.log(currentShipName);
     if (computerRotation === 1) {
       if (computerOccupiedCells.length === 0) {
         computerOccupiedCells.push([coordinates[0][0], coordinates[0][1]]);
@@ -40,13 +54,11 @@ export const Gameboard = () => {
           if (JSON.stringify(computerOccupiedCells).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) === -1 && JSON.stringify(computerAdjacentCells).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) === -1) {
             computerOccupiedCells.push([coordinates[0][0], coordinates[0][1]]);
           } else {
-            // alert('Cell is used or trying to place on adjacent cell');
             computerPiecePlaced = false;
             gameboardFlag = true;
             return;
           }
         } else {
-          // alert('Cell is used');
           computerPiecePlaced = false;
           gameboardFlag = true;
           return;
@@ -66,7 +78,6 @@ export const Gameboard = () => {
               computerOccupiedCells.pop();
             }
             count = 0;
-            // alert('Out of bounds (adjacent elements)');
             computerPiecePlaced = false;
             return;
           }
@@ -80,7 +91,6 @@ export const Gameboard = () => {
           }
           count = 0;
           shipArray = [];
-          // alert('Out of bounds');
           computerPiecePlaced = false;
           return;
         }
@@ -91,22 +101,36 @@ export const Gameboard = () => {
         for (let k = 0; k < ADJACENT_DIRECTIONS.length; k++) {
           const dx = (shipArray[j][0] + ADJACENT_DIRECTIONS[k][0]);
           const dy = (shipArray[j][1] + ADJACENT_DIRECTIONS[k][1]);
-          if ((JSON.stringify(computerOccupiedCells).indexOf(JSON.stringify([dx, dy])) === -1) && (JSON.stringify(shipArray).indexOf(JSON.stringify([dx, dy])) === -1) && (JSON.stringify(computerTempArray).indexOf(JSON.stringify([dx, dy]))) === -1 && (dx >= 0) && (dx <=9) && (dy >= 0) && (dy <= 9)) {
+          if ((JSON.stringify(computerOccupiedCells).indexOf(JSON.stringify([dx, dy])) === -1) && (JSON.stringify(shipArray).indexOf(JSON.stringify([dx, dy])) === -1) && (dx >= 0) && (dx <=9) && (dy >= 0) && (dy <= 9)) {
+            if (currentShipName === 'Destroyer') {
+              computerDestroyerAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'Submarine') {
+              computerSubmarineAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'PatrolBoat') {
+              computerPatrolboatAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'Carrier') {
+              computerCarrierAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'Battleship') {
+              computerBattleshipAdjacentCells.push([dx, dy]);
+            }
             computerTempArray.push([dx, dy]);
           }
         }
       }
       computerAdjacentCells = [...new Set(computerTempArray)];
-      for (let i = 0; i < computerAdjacentCells.length; i++) {
-        const cellID = computerAdjacentCells[i];
-        const selectCells = document.getElementById(`computerCell${cellID[0]}${cellID[1]}`);
-        selectCells.style.cssText = 'background-color: brown; border: 2px solid black;';
-      }
+      computerUniqueBattleshipAdjacentCells = [...new Set(computerBattleshipAdjacentCells)];
+      computerUniqueDestroyerAdjacentCells = [...new Set(computerDestroyerAdjacentCells)];
+      computerUniqueSubmarineAdjacentCells = [...new Set(computerSubmarineAdjacentCells)];
+      computerUniquePatrolboatAdjacentCells = [...new Set(computerPatrolboatAdjacentCells)];
+      computerUniqueCarrierAdjacentCells = [...new Set(computerCarrierAdjacentCells)];
       for (let i = 0; i < shipArray.length; i++) {
         const cellID = shipArray[i];
         const selectCells = document.getElementById(`computerCell${cellID[0]}${cellID[1]}`);
         selectCells.id = `computerCell${cellID[0]}${cellID[1]}${currentShipName}`;
-        selectCells.style.cssText = 'background-color: grey; border: 2px solid black;';
       }
       computerPiecePlaced = true;
       count = 0;
@@ -115,7 +139,6 @@ export const Gameboard = () => {
         computerChoice.shift();
         if (computerChoice.length === 0) {
           selectText.innerText = 'Begin Game';
-          // gameStart = true;
         } else {
           selectText.innerText = `Place your ${computerChoice[0]}`;
         }
@@ -133,13 +156,11 @@ export const Gameboard = () => {
           if (JSON.stringify(computerOccupiedCells).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) === -1 && JSON.stringify(computerAdjacentCells).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) === -1) {
             computerOccupiedCells.push([coordinates[0][0], coordinates[0][1]]);
           } else {
-            // alert('Cell is used12321');
             computerPiecePlaced = false;
             gameboardFlag = true;
             return;
           }
         } else {
-          // alert('Cell is used');
           computerPiecePlaced = false;
           gameboardFlag = true;
           return;
@@ -159,7 +180,6 @@ export const Gameboard = () => {
               computerOccupiedCells.pop();
             }
             count = 0;
-            // alert('Out of bounds (adjacent elements)');
             computerPiecePlaced = false;
             return;
           }
@@ -173,7 +193,6 @@ export const Gameboard = () => {
           }
           count = 0;
           shipArray = [];
-          // alert('Out of bounds');
           computerPiecePlaced = false;
           return;
         }
@@ -184,23 +203,37 @@ export const Gameboard = () => {
         for (let k = 0; k < ADJACENT_DIRECTIONS.length; k++) {
           const dx = (shipArray[j][0] + ADJACENT_DIRECTIONS[k][0]);
           const dy = (shipArray[j][1] + ADJACENT_DIRECTIONS[k][1]);
-          if ((JSON.stringify(computerOccupiedCells).indexOf(JSON.stringify([dx, dy])) === -1) && (JSON.stringify(shipArray).indexOf(JSON.stringify([dx, dy])) === -1) && (JSON.stringify(computerTempArray).indexOf(JSON.stringify([dx, dy]))) === -1 && (dx >= 0) && (dx <=9) && (dy >= 0) && (dy <= 9)) {
+          if ((JSON.stringify(computerOccupiedCells).indexOf(JSON.stringify([dx, dy])) === -1) && (JSON.stringify(shipArray).indexOf(JSON.stringify([dx, dy])) === -1) && (dx >= 0) && (dx <=9) && (dy >= 0) && (dy <= 9)) {
+            if (currentShipName === 'Destroyer') {
+              computerDestroyerAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'Submarine') {
+              computerSubmarineAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'PatrolBoat') {
+              computerPatrolboatAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'Carrier') {
+              computerCarrierAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'Battleship') {
+              computerBattleshipAdjacentCells.push([dx, dy]);
+            }
             computerTempArray.push([dx, dy]);
           }
         }
       }
       computerAdjacentCells = [...new Set(computerTempArray)];
-      for (let i = 0; i < computerAdjacentCells.length; i++) {
-        const cellID = computerAdjacentCells[i];
-        const selectCells = document.getElementById(`computerCell${cellID[0]}${cellID[1]}`);
-        console.log(currentShipName);
-        selectCells.style.cssText = 'background-color: brown; border: 2px solid black;';
-      }
+      computerUniqueBattleshipAdjacentCells = [...new Set(computerBattleshipAdjacentCells)];
+      computerUniqueDestroyerAdjacentCells = [...new Set(computerDestroyerAdjacentCells)];
+      computerUniqueSubmarineAdjacentCells = [...new Set(computerSubmarineAdjacentCells)];
+      computerUniquePatrolboatAdjacentCells = [...new Set(computerPatrolboatAdjacentCells)];
+      computerUniqueCarrierAdjacentCells = [...new Set(computerCarrierAdjacentCells)];
+      computerAdjacentCells = [...new Set(computerTempArray)];
       for (let i = 0; i < shipArray.length; i++) {
         const cellID = shipArray[i];
         const selectCells = document.getElementById(`computerCell${cellID[0]}${cellID[1]}`);
         selectCells.id = `computerCell${cellID[0]}${cellID[1]}${currentShipName}`;
-        selectCells.style.cssText = 'background-color: grey; border: 2px solid black;';
       }
       count = 0;
       const selectText = document.getElementById('BattleshipText');
@@ -208,7 +241,6 @@ export const Gameboard = () => {
         computerChoice.shift();
         if (computerChoice.length === 0) {
           selectText.innerText = 'Begin Game';
-          // gameStart = true;
         } else {
           selectText.innerText = `Place your ${computerChoice[0]}`;
         }
@@ -218,6 +250,7 @@ export const Gameboard = () => {
 
 
   const place = (ship, coordinates) => {
+    currentShipName = ship.name;
     if (!rotation) {
       if (occupiedCells.length === 0) {
         occupiedCells.push([coordinates[0][0], coordinates[0][1]]);
@@ -278,20 +311,32 @@ export const Gameboard = () => {
         for (let k = 0; k < ADJACENT_DIRECTIONS.length; k++) {
           const dx = (shipArray[j][0] + ADJACENT_DIRECTIONS[k][0]);
           const dy = (shipArray[j][1] + ADJACENT_DIRECTIONS[k][1]);
-          if ((JSON.stringify(occupiedCells).indexOf(JSON.stringify([dx, dy])) === -1) && (JSON.stringify(shipArray).indexOf(JSON.stringify([dx, dy])) === -1) && (JSON.stringify(tempArray).indexOf(JSON.stringify([dx, dy]))) === -1 && (dx >= 0) && (dx <=9) && (dy >= 0) && (dy <= 9)) {
+          if ((JSON.stringify(occupiedCells).indexOf(JSON.stringify([dx, dy])) === -1) && (JSON.stringify(shipArray).indexOf(JSON.stringify([dx, dy])) === -1) && (dx >= 0) && (dx <=9) && (dy >= 0) && (dy <= 9)) {
+            if (currentShipName === 'Destroyer') {
+              destroyerAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'Submarine') {
+              submarineAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'PatrolBoat') {
+              patrolboatAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'Carrier') {
+              carrierAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'Battleship') {
+              battleshipAdjacentCells.push([dx, dy]);
+            }
             tempArray.push([dx, dy]);
           }
         }
       }
       adjacentCells = [...new Set(tempArray)];
-      for (let i = 0; i < adjacentCells.length; i++) {
-        const cellID = adjacentCells[i];
-        const selectCells = document.getElementById(`playerCell${cellID[0]}${cellID[1]}`);
-        selectCells.style.cssText = 'background-color: brown; border: 2px solid black;';
-      }
+
       for (let i = 0; i < shipArray.length; i++) {
         const cellID = shipArray[i];
         const selectCells = document.getElementById(`playerCell${cellID[0]}${cellID[1]}`);
+        selectCells.id = `playerCell${cellID[0]}${cellID[1]}${currentShipName}`;
         selectCells.style.cssText = 'background-color: grey; border: 2px solid black;';
       }
       count = 0;
@@ -366,20 +411,31 @@ export const Gameboard = () => {
         for (let k = 0; k < ADJACENT_DIRECTIONS.length; k++) {
           const dx = (shipArray[j][0] + ADJACENT_DIRECTIONS[k][0]);
           const dy = (shipArray[j][1] + ADJACENT_DIRECTIONS[k][1]);
-          if ((JSON.stringify(occupiedCells).indexOf(JSON.stringify([dx, dy])) === -1) && (JSON.stringify(shipArray).indexOf(JSON.stringify([dx, dy])) === -1) && (JSON.stringify(tempArray).indexOf(JSON.stringify([dx, dy]))) === -1 && (dx >= 0) && (dx <=9) && (dy >= 0) && (dy <= 9)) {
+          if ((JSON.stringify(occupiedCells).indexOf(JSON.stringify([dx, dy])) === -1) && (JSON.stringify(shipArray).indexOf(JSON.stringify([dx, dy])) === -1) && (dx >= 0) && (dx <=9) && (dy >= 0) && (dy <= 9)) {
+            if (currentShipName === 'Destroyer') {
+              destroyerAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'Submarine') {
+              submarineAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'PatrolBoat') {
+              patrolboatAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'Carrier') {
+              carrierAdjacentCells.push([dx, dy]);
+            }
+            if (currentShipName === 'Battleship') {
+              battleshipAdjacentCells.push([dx, dy]);
+            }
             tempArray.push([dx, dy]);
           }
         }
       }
       adjacentCells = [...new Set(tempArray)];
-      for (let i = 0; i < adjacentCells.length; i++) {
-        const cellID = adjacentCells[i];
-        const selectCells = document.getElementById(`playerCell${cellID[0]}${cellID[1]}`);
-        selectCells.style.cssText = 'background-color: brown; border: 2px solid black;';
-      }
       for (let i = 0; i < shipArray.length; i++) {
         const cellID = shipArray[i];
         const selectCells = document.getElementById(`playerCell${cellID[0]}${cellID[1]}`);
+        selectCells.id = `playerCell${cellID[0]}${cellID[1]}${currentShipName}`;
         selectCells.style.cssText = 'background-color: grey; border: 2px solid black;';
       }
       count = 0;
@@ -398,15 +454,14 @@ export const Gameboard = () => {
 
 
   const receiveAttack = (coordinates) => {
-    console.log(`receiveattack ${currentTarget}`);
     if (playerOneTurn) {
-      if (JSON.stringify(attemptedAttacks).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) === -1) {
+      if (JSON.stringify(attemptedAttacks).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) === -1 && currentETarget.textContent !== '●') {
         attemptedAttacks.push([coordinates[0][0], coordinates[0][1]]);
         let selectComputerCell = document.getElementById(`computerCell${[coordinates[0][0]]}${[coordinates[0][1]]}`);
         if (selectComputerCell === null) {
           selectComputerCell = document.getElementById(`${currentTarget}`);
         }
-        if (JSON.stringify(computerOccupiedCells).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) !== -1 && JSON.stringify(missedAttacks).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) === -1) {
+        if (JSON.stringify(computerOccupiedCells).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) !== -1) {
           const shipName = currentTarget.slice(14, currentTarget.length);
           switch (shipName) {
             case 'Carrier':
@@ -439,8 +494,14 @@ export const Gameboard = () => {
           }
         } else {
           missedAttacks.push([coordinates[0][0], coordinates[0][1]]);
-          selectComputerCell.style.backgroundColor = 'yellow';
+          console.log('HERE');
+          selectComputerCell.innerText = '●';
+          selectComputerCell.textContent = '●';
           playerOneTurn = false;
+          setTimeout(function() {
+            Player().playerTwo.randomComputerHit();
+            playerOneTurn = true;
+          }, 1000);
         }
       } else {
         alert('Cell already attacked');
@@ -449,61 +510,12 @@ export const Gameboard = () => {
         setTimeout(function() {
           alert('game over');
         }, 50);
+        const selectPlayerGrid = document.getElementById('playerGrid');
+        const selectComputerGrid = document.getElementById('computerGrid');
+        selectPlayerGrid.style.pointerEvents = 'none';
+        selectComputerGrid.style.pointerEvents = 'none';
         return;
       }
-    } else {
-      alert('not your turn');
-    // TODO: add computer random hit on player grid
-    //   if (JSON.stringify(computerAttemptedAttacks).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) === -1) {
-    //     computerAttemptedAttacks.push([coordinates[0][0], coordinates[0][1]]);
-    //     let selectComputerCell = document.getElementById(`computerCell${[coordinates[0][0]]}${[coordinates[0][1]]}`);
-    //     if (selectComputerCell === null) {
-    //       selectComputerCell = document.getElementById(`${currentTarget}`);
-    //     }
-    //     if (JSON.stringify(computerOccupiedCells).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) !== -1 && JSON.stringify(missedAttacks).indexOf(JSON.stringify([coordinates[0][0], coordinates[0][1]])) === -1) {
-    //       const shipName = currentTarget.slice(14, currentTarget.length);
-    //       switch (shipName) {
-    //         case 'Carrier':
-    //           carrierHits++;
-    //           Ship().hit(Ship().Carrier);
-    //           break;
-    //         case 'Battleship':
-    //           battleShipHits++;
-    //           Ship().hit(Ship().Battleship);
-    //           break;
-    //         case 'Destroyer':
-    //           destroyerHits++;
-    //           Ship().hit(Ship().Destroyer);
-    //           break;
-    //         case 'Submarine':
-    //           submarineHits++;
-    //           Ship().hit(Ship().Submarine);
-    //           break;
-    //         case 'PatrolBoat':
-    //           patrolBoatHits++;
-    //           Ship().hit(Ship().PatrolBoat);
-    //           break;
-    //       }
-    //       selectComputerCell.style.backgroundColor = 'red';
-    //       for (let i = 0; i < computerOccupiedCells.length; i++) {
-    //         if (JSON.stringify(computerOccupiedCells[i]) === JSON.stringify([coordinates[0][0], coordinates[0][1]])) {
-    //           computerOccupiedCells.splice(i, 1);
-    //           break;
-    //         }
-    //       }
-    //     } else {
-    //       missedAttacks.push([coordinates[0][0], coordinates[0][1]]);
-    //       selectComputerCell.style.backgroundColor = 'yellow';
-    //     }
-    //   } else {
-    //     alert('Cell already attacked');
-    //   }
-    //   if (computerOccupiedCells.length === 0) {
-    //     setTimeout(function() {
-    //       alert('game over');
-    //     }, 50);
-    //     return;
-    //   }
     }
   };
   return {

@@ -1,8 +1,22 @@
+@font-face {
+  font-family: 'itc_machine_stdmedium';
+  src: url('./fonts/machinestd-webfont.woff2') format('woff2'),
+       url('./fonts/machinestd-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     background-color: #0c4a6e;
+    font-family: itc_machine_stdmedium, sans-serif;
+}
+
+.playerGrid-cells,
+.computerGrid-cells {
+  background-color: #0c4a6e;
 }
 :root {
   --grid-cols: 10;
@@ -34,10 +48,48 @@
   height: 500px;
 }
 #title {
+  font-size: 32px;
+  letter-spacing: 16px;
   margin-top: 3em;
   text-align: center;
-  color: white;
+  color: silver;
+  text-shadow: rgb(0, 0, 0) -3px 6px 3px;
 }
 li {
   list-style: none;
+}
+.computerGrid-cells,
+.playerGrid-cells {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#RotationButton {
+  box-shadow:inset 0px 1px 15px 3px #23395e;
+  background:linear-gradient(to bottom, #2e466e 5%, #415989 100%);
+  background-color:#2e466e;
+  border-radius:20px;
+  border:2px solid #1f2f47;
+  display:inline-block;
+  cursor:pointer;
+  color:#ffffff;
+  font-family:Arial;
+  font-size:15px;
+  padding:9px 15px;
+  text-decoration:none;
+  text-shadow:0px 1px 0px #263666;
+}
+#RotationButton:hover {
+  background:linear-gradient(to bottom, #415989 5%, #2e466e 100%);
+  background-color:#415989;
+}
+#RotationButton:active {
+  position:relative;
+  top:1px;
+}
+#BattleshipText {
+  letter-spacing: 6px;
+}
+#RotationText {
+  letter-spacing: 2px;
 }
