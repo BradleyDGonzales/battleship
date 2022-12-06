@@ -1,1 +1,2 @@
 # battleship
+This is Battleship, main logic is working however the AI is a bit clumsy at times. Overall, very proud of this and I do plan on refactoring the code and making the AI more efficient and smarter
